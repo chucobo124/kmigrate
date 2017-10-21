@@ -10,14 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171020170119) do
+ActiveRecord::Schema.define(version: 20171021071904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "images", force: :cascade do |t|
+    t.string "uri"
+    t.string "filename"
+    t.integer "size"
+    t.integer "image_class"
+    t.boolean "is_download", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_item_id"
+    t.index ["user_item_id"], name: "index_images_on_user_item_id"
+  end
+
   create_table "statuses", force: :cascade do |t|
     t.boolean "is_profile", default: false
-    t.boolean "is_profile_detail", default: false
     t.boolean "is_user_item", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -26,17 +37,17 @@ ActiveRecord::Schema.define(version: 20171020170119) do
   end
 
   create_table "user_items", force: :cascade do |t|
+    t.string "serial_number"
     t.string "category_lv1"
     t.string "category_lv2"
     t.decimal "price"
+    t.decimal "original_price"
     t.string "name"
     t.text "description"
     t.string "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.bigint "images_id"
-    t.index ["images_id"], name: "index_user_items_on_images_id"
     t.index ["user_id"], name: "index_user_items_on_user_id"
   end
 

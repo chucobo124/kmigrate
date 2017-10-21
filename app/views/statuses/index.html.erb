@@ -1,0 +1,25 @@
+<table>
+  <thead>
+    <tr>
+      <th>User id</th>
+      <th>KK Serial Number</th>
+      <th>Is profile</th>
+      <th>Is user item</th>
+      <th>Updated at</th>
+      <th>Created at</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @statuses.each do |status| %>
+      <tr>
+        <td><%= status.user_id %></td>
+        <td><%= status.user.serial_number %></td>
+        <td><%= status.is_profile %></td>
+        <td><%= status.is_user_item %></td>
+        <td><%= status.updated_at %></td>
+        <td><%= status.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

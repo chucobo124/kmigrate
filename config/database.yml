@@ -84,5 +84,6 @@ test:
 production:
   <<: *default
   database: kmigrate_production
+  host: postgres
   username: kmigrate
   password: <%= ENV['KMIGRATE_DATABASE_PASSWORD'] %>

@@ -1,0 +1,23 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+    - "8000:3000"
+    volumes:
+    - .:/kmigrate
+    links:
+    - postgres
+    command: bash -c "export SECRET_KEY_BASE=`rake secret` && rm /kmigrate/tmp/pids/server.pid && rake db:create && rake db:migrate && rails assets:precompile && bundle exec rails s"
+    environment:
+      - RAILS_ENV=production
+      - KMIGRATE_DATABASE_PASSWORD=zW/F,![@9rA(9:,H
+
+  postgres:
+    image: postgres
+    ports: 
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=zW/F,![@9rA(9:,H
+      - POSTGRES_USER=kmigrate
+      

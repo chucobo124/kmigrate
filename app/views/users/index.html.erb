@@ -6,11 +6,8 @@
   <thead>
     <tr>
       <th>Carousell user</th>
-      <th>String</th>
       <th>Kktown user</th>
-      <th>String</th>
       <th>Serial number</th>
-      <th>String</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -19,11 +16,8 @@
     <% @users.each do |user| %>
       <tr>
         <td><%= user.carousell_user %></td>
-        <td><%= user.string %></td>
         <td><%= user.kktown_user %></td>
-        <td><%= user.string %></td>
         <td><%= user.serial_number %></td>
-        <td><%= user.string %></td>
         <td><%= link_to 'Show', user %></td>
         <td><%= link_to 'Edit', edit_user_path(user) %></td>
         <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>

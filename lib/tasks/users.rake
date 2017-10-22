@@ -1,20 +1,13 @@
 require 'kktown/user_profiles.rb'
 require 'kktown/user_items.rb'
+require 'logs/logs.rb'
 require 'json'
-UUID = SecureRandom.uuid.to_s
-LOG_START_PROCESS =  UUID +  '===> Start %s ---' + Time.now.to_s
-LOG_FETCH_URL = UUID + '===> Fetch url--- Serial_Number/KKID: %s ---' + Time.now.to_s
-LOG_UPDATE_TABLE = UUID + '===> Update %s table %s ---' + Time.now.to_s
-LOG_SLEEP = UUID + '===> Completed Sleep %s second ---' + Time.now.to_s
-LOG_COMPLETED = UUID + '===> Completed %s ---' + Time.now.to_s
-LOG_PROCESS_FAILD = UUID + '===> Processing %s Error--- Serial_Number/KKID: %s ' + Time.now.to_s
-
 namespace :users do
   desc 'get user profile and save to database'
   task get_user_profile: :environment do
     process_name = 'get_user_profile'
     kapi_user_profile = KAPI::UserProfiles.new
-    puts LOG_START_PROCESS % process_name
+    puts Logs::START_PROCESS % process_name
 
     Status.un_profile.each do |status|
       user = status.user
@@ -22,39 +15,39 @@ namespace :users do
       next if serial_number.blank?
 
       # Fetch URL
-      puts LOG_FETCH_URL % serial_number
+      puts Logs::FETCH_URL % serial_number
       user_profile = kapi_user_profile.fetch_user_profile(serial_number)
       dup_user_profile = user_profile.dup
 
       if dup_user_profile[:id].present?
         dup_user_profile[:kk_id] = dup_user_profile[:id]
       else
-        puts format(LOG_PROCESS_FAILD, 'fetch_user_profile', serial_number)
+        puts format(Logs::PROCESS_FAILD, 'fetch_user_profile', serial_number)
       end
       dup_user_profile.delete(:id)
 
       # Update Profile Table
-      puts format(LOG_UPDATE_TABLE, 'Profile', serial_number)
+      puts format(Logs::UPDATE_TABLE, 'Profile', serial_number)
       local_user_profile = user.create_user_profile(dup_user_profile)
 
       # Update Sataus Table
-      puts format(LOG_UPDATE_TABLE, 'Sataus', serial_number)
+      puts format(Logs::UPDATE_TABLE, 'Sataus', serial_number)
       status.is_profile = true
       status.save
 
       # Sleep
-      puts LOG_SLEEP % 'one'
+      puts Logs::SLEEP % 'one'
       sleep(1)
     end
 
-    puts LOG_COMPLETED % process_name
+    puts Logs::COMPLETED % process_name
   end
 
   desc 'get user items and save to database'
   task get_user_items: :environment do
     process_name = 'get_user_items'
     kapi_user_items = KAPI::UserItems.new
-    puts LOG_START_PROCESS % process_name
+    puts Logs::START_PROCESS % process_name
 
     Status.un_user_items.each do |status|
       user = status.user
@@ -63,7 +56,7 @@ namespace :users do
       next if kk_id.blank?
 
       # Fetch URL
-      puts LOG_FETCH_URL % kk_id
+      puts Logs::FETCH_URL % kk_id
       user_items = kapi_user_items.fetch_user_items(kk_id)
       dup_user_items = user_items.dup
 
@@ -71,7 +64,7 @@ namespace :users do
         # Update UserItems Table
         prepare_user_item = user_item.dup.without(:cover_image, :images)
         if UserItem.find_by(serial_number: prepare_user_item[:serial_number]).blank?
-          puts format(LOG_UPDATE_TABLE, 'UserItems', kk_id)
+          puts format(Logs::UPDATE_TABLE, 'UserItems', kk_id)
           users_user_item = UserItem.new(prepare_user_item)
           user.user_items << users_user_item
         else
@@ -101,16 +94,16 @@ namespace :users do
       end
 
       # Update Sataus Table
-      puts format(LOG_UPDATE_TABLE, 'Sataus', kk_id)
+      puts format(Logs::UPDATE_TABLE, 'Sataus', kk_id)
       status.is_user_item = true
       status.save
 
       # Sleep
-      puts LOG_SLEEP % 'one'
+      puts Logs::SLEEP % 'one'
       sleep(1)
     end
 
-    puts LOG_COMPLETED % process_name
+    puts Logs::COMPLETED % process_name
   end
 
   private
@@ -120,10 +113,10 @@ namespace :users do
     filename = uri.split('/').last
     image_object = Image.find_by(uri: uri)
     if image_object.blank?
-      puts format(LOG_UPDATE_TABLE, image_class.to_s + ' to Images', uri)
+      puts format(Logs::UPDATE_TABLE, image_class.to_s + ' to Images', uri)
       image = Image.new(uri: uri, filename: filename, image_class: image_class, size: size)
     else
-      puts format(LOG_UPDATE_TABLE, image_class.to_s + 'mapping to Images', uri)
+      puts format(Logs::UPDATE_TABLE, image_class.to_s + 'mapping to Images', uri)
       image_object
     end
   end

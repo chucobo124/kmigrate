@@ -80,22 +80,22 @@ namespace :users do
 
         # Update Images Table
         normal_cover_image_uri = user_item[:cover_image].try(:[], :normal)
-        image_object = save_image(normal_cover_image_uri, :cover_image, :normal)
+        image_object = save_image_row(normal_cover_image_uri, :cover_image, :normal)
         users_user_item.images << image_object if image_object.present?
 
         # Update CoverImages to Images
         small_cover_image_uri = user_item[:cover_image].try(:[], :small)
-        image_object = save_image(small_cover_image_uri, :cover_image, :small)
+        image_object = save_image_row(small_cover_image_uri, :cover_image, :small)
         users_user_item.images << image_object if image_object.present?
 
         # Update Images to Images
         user_item[:images].each do |image|
           small_image_uri = image[:small]
-          image_object = save_image(small_image_uri, :images, :small)
+          image_object = save_image_row(small_image_uri, :images, :small)
           users_user_item.images << image_object if image_object.present?
 
           normal_image_uri = image[:normal]
-          image_object = save_image(normal_image_uri, :images, :normal)
+          image_object = save_image_row(normal_image_uri, :images, :normal)
           users_user_item.images << image_object if image_object.present?
         end
       end
@@ -115,13 +115,16 @@ namespace :users do
 
   private
 
-  def save_image(uri, image_class, size)
+  def save_image_row(uri, image_class, size)
     return if uri.blank?
     filename = uri.split('/').last
-    if Image.find_by(uri: uri).blank?
+    image_object = Image.find_by(uri: uri)
+    if image_object.blank?
       puts format(LOG_UPDATE_TABLE, image_class.to_s + ' to Images', uri)
       image = Image.new(uri: uri, filename: filename, image_class: image_class, size: size)
+    else
+      puts format(LOG_UPDATE_TABLE, image_class.to_s + 'mapping to Images', uri)
+      image_object
     end
-    image
   end
 end

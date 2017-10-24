@@ -20,6 +20,7 @@ class KAPI::UserItems < KAPI
           price: item[:price],
           original_price: item[:original_price],
           name: item[:name],
+          status: item[:status],
           description: item[:description],
           location: item[:location],
           cover_image: { normal: item[:cover_image].try(:[], :url_normal),

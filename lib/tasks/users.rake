@@ -25,9 +25,11 @@ namespace :users do
         puts format(Logs::PROCESS_FAILD, 'fetch_user_profile', serial_number)
       end
       dup_user_profile.delete(:id)
+      dup_user_profile.delete(:biography)
 
       # Update Profile Table
       puts format(Logs::UPDATE_TABLE, 'Profile', serial_number)
+      puts dup_user_profile
       local_user_profile = user.create_user_profile(dup_user_profile)
 
       # Update Sataus Table
@@ -61,6 +63,8 @@ namespace :users do
       dup_user_items = user_items.dup
 
       dup_user_items.each do |user_item|
+        next if user_item[:status] != 1
+        user_item.delete(:status)
         # Update UserItems Table
         prepare_user_item = user_item.dup.without(:cover_image, :images)
         if UserItem.find_by(serial_number: prepare_user_item[:serial_number]).blank?

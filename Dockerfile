@@ -4,7 +4,7 @@ RUN mkdir /kmigrate
 WORKDIR /kmigrate
 ADD Gemfile /kmigrate/Gemfile
 ADD Gemfile.lock /kmigrate/Gemfile.lock
-ADD Rakefile.lock /kmigrate/Rakefile.lock
+ADD Rakefile /kmigrate/Rakefile
 RUN pwd
 RUN bundle install
 ADD . /kmigrate

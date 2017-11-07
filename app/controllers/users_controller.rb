@@ -37,6 +37,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def batch_create
+    
+  end
+
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update

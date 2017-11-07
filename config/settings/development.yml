@@ -1,0 +1,2 @@
+username_profile: <%= ENV['USERNAME_PROFILE']%>
+prifle_api: <%= ENV['PROFILE_API']%>

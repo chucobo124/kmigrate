@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 20171030205207) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.boolean "is_uploaded"
+    t.boolean "is_uploaded", default: false
     t.index ["user_id"], name: "index_user_items_on_user_id"
   end
 

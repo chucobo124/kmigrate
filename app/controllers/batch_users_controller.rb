@@ -1,7 +1,7 @@
 class BatchUsersController < ApplicationController
   require 'csv'
   require 'net/http'
-  
+
   def index; end
 
   def show; end
@@ -21,10 +21,12 @@ class BatchUsersController < ApplicationController
       carousell_user = row[2]
       serial_number = row[1]
       user = user_checking(serial_number, carousell_user)
-      user[:serial_number] = serial_number
-      user[:carousell_user] = carousell_user
+      if user.present?
+        user[:serial_number] = serial_number
+        user[:carousell_user] = carousell_user
+      end
       user
-    end
+    end.compact
 
     csv_string = CSV.generate do |csv|
       csv << users[0].keys
@@ -32,7 +34,7 @@ class BatchUsersController < ApplicationController
     end
 
     if csv_string.present?
-      path = 'kkmigrate/csv_parser/check_result_' + Time.now.strftime("%y%m%d_%H_%M_%S")
+      path = 'kkmigrate/csv_parser/check_result_' + Time.now.strftime('%y%m%d_%H_%M_%S')
       File.open(path + '.csv', 'w+') do |f|
         f.write(csv_string)
       end
@@ -61,24 +63,37 @@ class BatchUsersController < ApplicationController
   end
 
   def user_checking(serial_number, carousell_user)
-    uri = URI.parse((USERNAME_PROFILE % carousell_user.to_s).delete(' '))
     is_carousell_user = false
     is_kktown_user = false
-    resp = Net::HTTP.get_response(uri)
-    if resp.code == '301'
-      resp = Net::HTTP.get_response(URI.parse(resp.header['location']))
-      if resp.code == '302'
-        carousell_user = JSON.parse(Net::HTTP.get_response(URI.parse(resp.header['location'])).body, symbolize_names: true)
-        if carousell_user.present?
-          is_carousell_user = carousell_user[:is_admin].present? && !carousell_user[:is_admin]
+
+    begin
+      caro_uri = URI.parse((USERNAME_PROFILE % carousell_user.to_s))
+    rescue
+    end
+
+    if caro_uri.present?
+      resp = Net::HTTP.get_response(caro_uri)
+      if resp.code == '301'
+        resp = Net::HTTP.get_response(URI.parse(resp.header['location']))
+        if resp.code == '302'
+          carousell_user = JSON.parse(Net::HTTP.get_response(URI.parse(resp.header['location'])).body, symbolize_names: true)
+          if carousell_user.present?
+            is_carousell_user = carousell_user[:is_admin].present? && !carousell_user[:is_admin]
+          end
         end
       end
     end
 
-    uri = URI.parse((PROFILE_API % serial_number.to_s).delete(' '))
-    resp = JSON.parse(Net::HTTP.get_response(uri).body, symbolize_names: true)
-    is_kktown_user = true if resp[:serial_number] == serial_number
+    begin
+      kk_uri = URI.parse((PROFILE_API % serial_number.to_s))
+    rescue
+    end
 
+    if kk_uri.present?
+      resp = JSON.parse(Net::HTTP.get_response(kk_uri).body, symbolize_names: true)
+      is_kktown_user = true if resp[:serial_number] == serial_number
+    end
+    
     { is_kktown_user: is_kktown_user,
       is_carousell_user: is_carousell_user }
   end

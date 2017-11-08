@@ -1,0 +1,5 @@
+export ITEMS_API="https://api.kktown.com.tw/api/accounts/%s/items?size=100&last_serial_number="
+export PROFILE_API="https://api.kktown.com.tw/api/accounts/%s"
+export IMAGE_PATH="kkmigrate/"
+export CAROUSELL_PRODUCTS="https://api.carousell.com/api/2.5/products/"
+export USERNAME_PROFILE="https://api.carousell.com/api/2.0/username/%s"

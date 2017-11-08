@@ -1,6 +1,7 @@
 class BatchUsersController < ApplicationController
   require 'csv'
-  include ActionController::DataStreaming
+  require 'net/http'
+  
   def index; end
 
   def show; end
@@ -60,7 +61,7 @@ class BatchUsersController < ApplicationController
   end
 
   def user_checking(serial_number, carousell_user)
-    uri = URI.parse((USERNAME_PROFILE % carousell_user).delete(' '))
+    uri = URI.parse((USERNAME_PROFILE % carousell_user.to_s).delete(' '))
     is_carousell_user = false
     is_kktown_user = false
     resp = Net::HTTP.get_response(uri)
@@ -74,7 +75,7 @@ class BatchUsersController < ApplicationController
       end
     end
 
-    uri = URI.parse((PROFILE_API % serial_number).delete(' '))
+    uri = URI.parse((PROFILE_API % serial_number.to_s).delete(' '))
     resp = JSON.parse(Net::HTTP.get_response(uri).body, symbolize_names: true)
     is_kktown_user = true if resp[:serial_number] == serial_number
 

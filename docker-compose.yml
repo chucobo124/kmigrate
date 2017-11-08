@@ -8,11 +8,14 @@ services:
     - .:/kmigrate
     links:
     - postgres
-    command: bash -c "export SECRET_KEY_BASE=`rake secret` && rake db:create && rake db:migrate && rails assets:precompile && bundle exec rails s"
+    command: bash -c "export SECRET_KEY_BASE=`rake secret` && rake db:create && rake db:migrate && rake assets:precompile && bundle exec rails s"
     environment:
       - RAILS_ENV=production
       - KMIGRATE_DATABASE_PASSWORD=zW/F,![@9rA(9:,H
-
+      - ITEMS_API=https://api.kktown.com.tw/api/accounts/%s/items?size=100&last_serial_number=
+      - PROFILE_API=https://api.kktown.com.tw/api/accounts/%s  
+      - USERNAME_PROFILE=https://api.carousell.com/api/2.0/username/%s
+      - CAROUSELL_PRODUCTS=https://api.carousell.com/api/2.5/products/
   postgres:
     image: postgres
     ports: 

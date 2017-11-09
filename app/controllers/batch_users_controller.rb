@@ -1,7 +1,7 @@
 class BatchUsersController < ApplicationController
   require 'csv'
   require 'net/http'
-
+  CONNECTION_RETRY = 5
   def index; end
 
   def show; end
@@ -17,6 +17,7 @@ class BatchUsersController < ApplicationController
 
   def checking_with_csv
     csv = CSV.parse(csv_file.open.read)
+
     users = csv.drop(1).map do |row|
       carousell_user = row[2]
       serial_number = row[1]
@@ -39,6 +40,7 @@ class BatchUsersController < ApplicationController
         f.write(csv_string)
       end
     end
+
     redirect_to batch_users_path
   end
 
@@ -73,13 +75,20 @@ class BatchUsersController < ApplicationController
 
     if caro_uri.present?
       resp = Net::HTTP.get_response(caro_uri)
-      if resp.code == '301'
-        resp = Net::HTTP.get_response(URI.parse(resp.header['location']))
-        if resp.code == '302'
-          carousell_user = JSON.parse(Net::HTTP.get_response(URI.parse(resp.header['location'])).body, symbolize_names: true)
-          if carousell_user.present?
-            is_carousell_user = carousell_user[:is_admin].present? && !carousell_user[:is_admin]
-          end
+      retry_count = 0
+      while (resp.code == '301' || resp.code == '302') && (retry_count < CONNECTION_RETRY)
+        if resp.header['location'].present?
+          resp = Net::HTTP.get_response(URI.parse(resp.header['location']))
+        end
+        next unless resp.body.present?
+        carousell_user = JSON.parse(resp.body, symbolize_names: true)
+      end
+
+      if carousell_user.present?
+        if !carousell_user[:is_admin].nil?
+          is_carousell_user = !carousell_user[:is_admin]
+        else
+          is_carousell_user = carousell_user[:is_admin]
         end
       end
     end
@@ -93,7 +102,7 @@ class BatchUsersController < ApplicationController
       resp = JSON.parse(Net::HTTP.get_response(kk_uri).body, symbolize_names: true)
       is_kktown_user = true if resp[:serial_number] == serial_number
     end
-    
+
     { is_kktown_user: is_kktown_user,
       is_carousell_user: is_carousell_user }
   end

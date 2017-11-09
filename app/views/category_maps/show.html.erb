@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Kktwon category:</strong>
+  <%= @category_map.kktwon_category %>
+</p>
+
+<p>
+  <strong>Kktwon sub category:</strong>
+  <%= @category_map.kktwon_sub_category %>
+</p>
+
+<p>
+  <strong>Carousell category:</strong>
+  <%= @category_map.carousell_category %>
+</p>
+
+<p>
+  <strong>Carousell sub category:</strong>
+  <%= @category_map.carousell_sub_category %>
+</p>
+
+<p>
+  <strong>Carousell category:</strong>
+  <%= @category_map.carousell_category_id %>
+</p>
+
+<%= link_to 'Edit', edit_category_map_path(@category_map) %> |
+<%= link_to 'Back', category_maps_path %>

@@ -3,7 +3,7 @@
         <h1>Batch Control Panel</h1>
     </div>
     <hr/>
-
+    
     <div class="container">
         <%= form_tag({action: :create, controller: :batch_users, method: 'POST'}, multipart: true, class: 'form-group row') do %>
             <div class="form-group row">
@@ -19,7 +19,7 @@
     </div>
     
     <hr/>
-    <div class="container">
+    
         <div class="container">
             <%= form_tag({action: :checking_with_csv, controller: :batch_users, method: 'POST'}, multipart: true, class: 'form-group row') do %>
                 <div class="form-group row">
@@ -33,6 +33,7 @@
                 </div>
             <% end %>
         </div>
+        
         <div class="container">
             <div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
                 <ul class="list-group">
@@ -44,5 +45,22 @@
                 </ul>
             </div>
         </div>
+    <hr/>
+
+     <div class="container">
+        <%= form_tag({action: :upload_with_csv, controller: :category_maps, method: 'POST'}, multipart: true, class: 'form-group row') do %>
+            <div class="form-group row">
+                <h3> Create Batch Category:</h3>
+            </div>
+            <div class="form-group row">
+                <%= file_field_tag 'csv_file' %>
+            </div>
+            <div class="form-group row">
+                <%= submit_tag 'Batch Create Category Maps', class: 'btn btn-primary' %>
+            </div>
+        <% end %>
+    </div>
+    <hr/>
+
     </div>
 </div>

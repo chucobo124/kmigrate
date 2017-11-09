@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Category Maps</h1>
+
+<table class='table'>
+  <thead>
+    <tr>
+      <th>Kktwon category</th>
+      <th>Kktwon sub category</th>
+      <th>Carousell category</th>
+      <th>Carousell sub category</th>
+      <th>Carousell category</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @category_maps.each do |category_map| %>
+      <tr>
+        <td><%= category_map.kktwon_category %></td>
+        <td><%= category_map.kktwon_sub_category %></td>
+        <td><%= category_map.carousell_category %></td>
+        <td><%= category_map.carousell_sub_category %></td>
+        <td><%= category_map.carousell_category_id %></td>
+        <td><%= link_to 'Show', category_map %></td>
+        <td><%= link_to 'Edit', edit_category_map_path(category_map) %></td>
+        <td><%= link_to 'Destroy', category_map, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Category Map', new_category_map_path %>

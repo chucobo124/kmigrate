@@ -75,8 +75,8 @@ class CategoryMapsController < ApplicationController
       category[:kktwon_sub_category] = row[1]
       category[:carousell_category] = carousell_category
       category[:carousell_sub_category] = carousell_sub_category
-      carousell_category = carousell_category.delete("&").delete(",").delete(" ")
-      carousell_sub_category = carousell_sub_category.delete("&").delete(",").delete(" ")
+      carousell_category = carousell_category.gsub(/[^0-9A-Za-z]/, '')
+      carousell_sub_category = carousell_sub_category.gsub(/[^0-9A-Za-z]/, '')
       if api_collections[carousell_category].present?
         if api_collections[carousell_category][carousell_sub_category].present?
           category[:carousell_category_id] = api_collections[carousell_category][carousell_sub_category][:id]
@@ -127,7 +127,7 @@ class CategoryMapsController < ApplicationController
     collection = pointer_collection = {}
     if collection_lists.present?
       collection_lists.each do |collection_list|
-        name = collection_list[:name].delete("&").delete(",").delete(" ")
+        name = collection_list[:name].gsub(/[^0-9A-Za-z]/, '')
         pointer_collection[name] = {}
         pointer_collection[name][:id] = collection_list[:id]
 
@@ -142,7 +142,7 @@ class CategoryMapsController < ApplicationController
   def loop_subcategory(collection_list)
     collection = pointer_collection = {}
     collection_list.each do |sub_collection|
-      name = sub_collection[:name].delete("&").delete(",").delete(" ")
+      name = sub_collection[:name].gsub(/[^0-9A-Za-z]/, '')
       pointer_collection[name] = {}
       pointer_collection[name][:id] = sub_collection[:id]
 

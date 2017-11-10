@@ -43,7 +43,8 @@ class KAPI::UserItems < KAPI
       puts 'Prepare images ' + images[key].to_s
       image = images[key]
       begin
-        photo_file = File.new('kkmigrate/' + image[:filename])
+        path = 'kkmigrate/'+ image.user_item.user.id.to_s + '/' +image.user_item.serial_number.to_s + '/' + image[:filename]
+        photo_file = File.new(path)
       rescue
       end
       puts 'Image haven\'t download'
@@ -63,7 +64,7 @@ class KAPI::UserItems < KAPI
       http.request(req)
       user_items.update(is_uploaded: true)
     end
-    
+
     puts 'Cateogry Name:' + user_items.category_lv2.to_s
     puts 'Response: ' + response.to_s
   end

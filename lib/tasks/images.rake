@@ -7,8 +7,9 @@ namespace :images do
     img_downloader = ImageKit::Downloader.new
     puts Logs::START_PROCESS % proccess_name
     Image.un_downloaded.each do |image|
+      category = image.user_item.user.id.to_s + '/' + image.user_item.serial_number.to_s
       puts Logs::DOWNLOADING % image.filename
-      img_downloader.download(image.uri, image.filename)
+      img_downloader.download(image.uri, category, image.filename)
 
       # Update table Image
       puts format(Logs::UPDATE_TABLE, 'Image', image.filename)

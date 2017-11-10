@@ -2,7 +2,7 @@
 
 <h1>Users</h1>
 
-<table>
+<table class='table'>
   <thead>
     <tr>
       <th>Carousell user</th>
@@ -29,10 +29,3 @@
 <br>
 
 <%= link_to 'New User', new_user_path %>
-
-<%= form_tag({action: :create, controller: :batch_users, method: 'POST'}, multipart: true) do %>
-  <%= file_field_tag 'users' %>
-  <div class="actions">
-    <%= submit_tag 'Upload Batch' %>
-  </div>
-<% end %>

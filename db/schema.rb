@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171030205207) do
+ActiveRecord::Schema.define(version: 20171109140132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "category_maps", force: :cascade do |t|
+    t.string "kktwon_category"
+    t.string "kktwon_sub_category"
+    t.string "carousell_category"
+    t.string "carousell_sub_category"
+    t.string "carousell_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "images", force: :cascade do |t|
     t.string "uri"

@@ -7,11 +7,16 @@ class BatchUsersController < ApplicationController
   def show; end
 
   def create
-    if users.present?
-      users.each do |user|
-        user = User.find_or_create_by(user)
-        user.status= Status.create
-      end
+    user_csv = params.require(:users)
+    CSV.parse(user_csv.open.read).drop(1).each do |row|
+      serial_number = row[1]
+      carousell_user = row[2]
+
+      user_checking = user_checking(serial_number, carousell_user)
+      next unless user_checking[:is_kktown_user] && user_checking[:is_carousell_user]
+      user = { carousell_user: carousell_user, serial_number: serial_number }
+      user = User.find_or_create_by(user)
+      user.status = Status.create
     end
     redirect_to users_path
   end
@@ -22,9 +27,7 @@ class BatchUsersController < ApplicationController
       carousell_user = row[0]
       token = row[1]
       user = User.find_by(carousell_user: carousell_user)
-      if user.present?
-        user.update(token: token)
-      end
+      user.update(token: token) if user.present?
     end
     redirect_to users_path
   end
@@ -64,21 +67,6 @@ class BatchUsersController < ApplicationController
     params.require(:csv_file)
   end
 
-  def users
-    user_csv = params.require(:users)
-    user_profile = []
-    CSV.parse(user_csv.open.read).drop(1).each do |row|
-      serial_number = row[1]
-      carousell_user = row[2]
-      user_checking = user_checking(serial_number, carousell_user)
-      if user_checking[:is_kktown_user] && user_checking[:is_carousell_user]
-        user_profile << { serial_number: serial_number,
-                          carousell_user:  carousell_user }
-      end
-    end
-    user_profile
-  end
-
   def user_checking(serial_number, carousell_user)
     is_carousell_user = false
     is_kktown_user = false
@@ -100,11 +88,11 @@ class BatchUsersController < ApplicationController
       end
 
       if carousell_user.present?
-        if !carousell_user[:is_admin].nil?
-          is_carousell_user = !carousell_user[:is_admin]
-        else
-          is_carousell_user = carousell_user[:is_admin]
-        end
+        is_carousell_user = if !carousell_user.try(:is_admin).nil?
+                              !carousell_user[:is_admin]
+                            else
+                              carousell_user[:is_admin]
+                            end
       end
     end
 

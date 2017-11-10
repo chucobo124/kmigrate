@@ -110,6 +110,16 @@ namespace :users do
     puts Logs::COMPLETED % process_name
   end
 
+  desc 'get carousell users list'
+  task carouser_list: :environment do
+    process_name = 'carouser_list'
+    puts Logs::START_PROCESS % process_name
+
+    users = User.no_token.each do |name|
+      puts'\'' + name.carousell_user + '\','
+    end
+  end
+
   private
 
   def save_image_row(uri, image_class, size)

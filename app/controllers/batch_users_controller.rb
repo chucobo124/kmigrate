@@ -9,7 +9,21 @@ class BatchUsersController < ApplicationController
   def create
     if users.present?
       users.each do |user|
-        User.find_or_create_by(user)
+        user = User.find_or_create_by(user)
+        user.status= Status.create
+      end
+    end
+    redirect_to users_path
+  end
+
+  def upload_token_with_csv
+    csv = CSV.parse(csv_file.open.read)
+    users = csv.map do |row|
+      carousell_user = row[0]
+      token = row[1]
+      user = User.find_by(carousell_user: carousell_user)
+      if user.present?
+        user.update(token: token)
       end
     end
     redirect_to users_path
@@ -56,7 +70,8 @@ class BatchUsersController < ApplicationController
     CSV.parse(user_csv.open.read).drop(1).each do |row|
       serial_number = row[1]
       carousell_user = row[2]
-      if user_checking(serial_number, carousell_user)
+      user_checking = user_checking(serial_number, carousell_user)
+      if user_checking[:is_kktown_user] && user_checking[:is_carousell_user]
         user_profile << { serial_number: serial_number,
                           carousell_user:  carousell_user }
       end

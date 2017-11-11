@@ -14,6 +14,7 @@ namespace :images do
           img_downloader.download(image.uri, category, image.filename)
         rescue
         end
+        
         # Update table Image
         puts format(Logs::UPDATE_TABLE, 'Image', image.filename)
         image.is_download = true
@@ -23,7 +24,7 @@ namespace :images do
         puts Logs::SLEEP % 'one'
         sleep(1)
       end
-      puts Logs::COMPLETED % 
+      puts Logs::COMPLETED % proccess_name
     end
   end
 end

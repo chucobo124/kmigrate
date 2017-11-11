@@ -5,7 +5,7 @@ class ImageKit::Downloader < ImageKit
   def download(url, category, filename)
     category = PATH + '/' + category + '/'
     path = category + filename
-    
+
     FileUtils.mkdir_p(category) unless File.directory?(category)
     open(path, 'wb') do |file|
       file << open(url).read

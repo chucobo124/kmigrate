@@ -11,13 +11,12 @@ class BatchUsersController < ApplicationController
     CSV.parse(user_csv.open.read).drop(1).each do |row|
       serial_number = row[1]
       carousell_user = row[2]
-      if serial_number.present? && carousell_user.present? 
-        user_checking = user_checking(serial_number, carousell_user)
-        next unless user_checking[:is_kktown_user] && user_checking[:is_carousell_user]
-        user = { carousell_user: carousell_user, serial_number: serial_number }
-        user = User.find_or_create_by(user)
-        user.status = Status.create
-      end
+      next unless serial_number.present? && carousell_user.present?
+      user_checking = user_checking(serial_number, carousell_user)
+      next unless user_checking[:is_kktown_user] && user_checking[:is_carousell_user]
+      user = { carousell_user: carousell_user, serial_number: serial_number }
+      user = User.find_or_create_by(user)
+      user.status = Status.create
     end
     redirect_to users_path
   end
@@ -87,7 +86,7 @@ class BatchUsersController < ApplicationController
         next unless resp.body.present?
         carousell_user = JSON.parse(resp.body, symbolize_names: true)
       end
-      
+
       if carousell_user.present?
         is_carousell_user = if !carousell_user.try(:is_admin)
                               !carousell_user[:is_admin]

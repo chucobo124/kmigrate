@@ -47,10 +47,14 @@ class KAPI::UserItems < KAPI
         photo_file = File.new(path)
       rescue
       end
-      puts 'Image haven\'t download'
-      return unless photo_file.present?
+      unless photo_file.present?
+        puts 'Image'+ photo  +'haven\'t download'
+        return
+      end 
       upload_params[photo] = UploadIO.new(photo_file, 'image/jpeg', image[:filename])
     end
+    
+    return unless check_photo.present?   
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = (url.scheme == 'https')
@@ -62,10 +66,11 @@ class KAPI::UserItems < KAPI
       req.add_field('Authorization', key) # add to Headers
       req.add_field('boundary', SecureRandom.uuid)
       http.request(req)
+      puts 'Completed Upload: ' +user_items.user.carousell_user+ '\'s ' + user_items.name
       user_items.update(is_uploaded: true)
     end
 
-    puts 'Cateogry Name:' + user_items.category_lv2.to_s
+    puts 'KKTOWN Cateogry Name:' + user_items.category_lv2.to_s
     puts 'Response: ' + response.to_s
   end
 

@@ -12,7 +12,7 @@ services:
     environment:
       - RAILS_ENV=production
       - KMIGRATE_DATABASE_PASSWORD=zW/F,![@9rA(9:,H
-      - ITEMS_API=https://api.kktown.com.tw/api/accounts/%s/items?size=100&last_serial_number=
+      - ITEMS_API=https://api.kktown.com.tw/api/accounts/%s/items?size=100&last_serial_number=%s
       - PROFILE_API=https://api.kktown.com.tw/api/accounts/%s  
       - USERNAME_PROFILE=https://api.carousell.com/api/2.0/username/%s
       - CAROUSELL_PRODUCTS=https://api.carousell.com/api/2.5/products/
